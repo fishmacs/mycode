@@ -127,8 +127,6 @@ module Sudoku
         p = puzzle.possible(row, col, box)
         case p.size
         when 0
-          print [row,col,box]
-          print puzzle
           raise Impossible
         when 1
           puzzle[row, col] = p[0]
