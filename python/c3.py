@@ -45,11 +45,13 @@ class A(object):
 
 class B(A):
     def test(self):
+        print self
         return 'B->' + super(B, self).test()
 
 
 class C(A):
     def test(self):
+        print self
         return 'C'
 
 
