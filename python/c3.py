@@ -35,8 +35,6 @@ def mro(cls):
     mro_list.append(bases)
     return c3(cls, *mro_list)
 
-# test code
-
 
 class A(object):
     def test(self):
