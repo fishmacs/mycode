@@ -1,19 +1,19 @@
 class A {
 }
 
-A.prototype === Function.prototype
+A.__proto__ === Function.prototype
 // true
 
 class B extends A {
 }
 
-B.prototype === C
+B.__proto__ === A
 // true
 
 class C extends Object {
 }
 
-C.prototype === Object
+C.__proto__ === Object
 // true
 
 var p1 = new Point(2, 3);
