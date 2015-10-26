@@ -37,7 +37,7 @@ test = ->
       if x > 0 then s1()
       else s2()
 
-    (ret[[a, b]] or= []).push order
+    (ret[[a, b]] ?= []).push order
   ret
 
 # very confused, I found "as"(4,3->3,3) modified by later recursive combine invoking(3,2), just because as already in REPL toplevel scope!!!
