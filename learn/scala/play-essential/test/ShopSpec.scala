@@ -2,7 +2,7 @@ import org.scalatestplus.play._
 
 import models.{Shop}
 
-class ShopSpec extends PlaySpec with OneAppPerTest {
+class ShopSpec extends PlaySpec {
   var id = 0L
 
   "A Shop" should {
