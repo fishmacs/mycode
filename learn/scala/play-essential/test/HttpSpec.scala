@@ -9,7 +9,7 @@ import controllers.routes.Items
 class HttpSpec extends PlaySpec with OneAppPerSuite {
   var id = 0L
 
-  //implicit val readItem: Reads[Item] = Json.reads[Item]
+  val readItem: Reads[Item] = Json.reads[Item]
 
   "Item controller" should {
     "list item: empty" in {
@@ -26,7 +26,7 @@ class HttpSpec extends PlaySpec with OneAppPerSuite {
         """{"name": "Play Framework Essentials", "price": 42}"""))
         .get
       status(res) mustBe OK
-      val item = Json.reads[Item].reads(contentAsJson(res)).get
+      val item = readItem.reads(contentAsJson(res)).get
       item.name mustBe "Play Framework Essentials"
       item.price mustBe 42
       id = item.id
@@ -46,7 +46,7 @@ class HttpSpec extends PlaySpec with OneAppPerSuite {
         """{"name": "Play Framework Essentials", "price": 40}"""))
         .get
       status(res) mustBe OK
-      val item = Json.reads[Item].reads(contentAsJson(res)).get
+      val item = readItem.reads(contentAsJson(res)).get
       item.name mustBe "Play Framework Essentials"
       item.price mustBe 40
     }
