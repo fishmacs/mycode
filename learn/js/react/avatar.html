@@ -3,45 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <title>Hello React</title>
-    <script src="https://fb.me/react-0.13.3.js"></script>
-    <script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
+    <script src="react-0.14.7/build/react.js"></script>
+    <script src="react-0.14.7/build/react-dom.js"></script>
+    <script src="js/babel-browser.min.js"></script>
   </head>
   <body>
     <div id="example"></div>
-    <script type="text/jsx">
-var Avatar = React.createClass({
-  render: function() {
-    return (
-      <div>
-        <ProfilePic username={this.props.username} />
-        <ProfileLink username={this.props.username} />
-      </div>
-    );
-  }
-});
+    <script type="text/babel">
+     var Avatar = React.createClass({
+       render: function() {
+         return (
+           <div>
+             <ProfilePic username={this.props.username} />
+             <ProfileLink username={this.props.username} />
+           </div>
+         );
+       }
+     });
 
-var ProfilePic = React.createClass({
-  render: function() {
-    return (
-      <img src={'https://graph.facebook.com/' + this.props.username + '/picture'} />
-    );
-  }
-});
+     var ProfilePic = React.createClass({
+       render: function() {
+         return (
+           <img src={'https://graph.facebook.com/' + this.props.username + '/picture'} />
+         );
+       }
+     });
 
-var ProfileLink = React.createClass({
-  render: function() {
-    return (
-      <a href={'https://www.facebook.com/' + this.props.username}>
-        {this.props.username}
-      </a>
-    );
-  }
-});
+     var ProfileLink = React.createClass({
+       render: function() {
+         return (
+           <a href={'https://www.facebook.com/' + this.props.username}>
+             {this.props.username}
+           </a>
+         );
+       }
+     });
 
-React.render(
-  <Avatar username="wei.zhao.5209" />,
-  document.getElementById('example')
-);
+     ReactDOM.render(
+       <Avatar username="wei.zhao.5209" />,
+       document.getElementById('example')
+     );
     </script>
   </body>
 </html>
