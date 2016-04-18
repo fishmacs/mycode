@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>React for javascript old timers</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <script data-require="fetch@*" data-semver="0.7.0" src="https://cdn.rawgit.com/github/fetch/master/fetch.js"></script>
+    <script src="js/babel-browser.min.js"></script>
+    <script src="react-0.14.7/build/react.js"></script>
+    <script src="react-0.14.7/build/react-dom.js"></script>
+
+  </head>
+  <body>
+    <div id="banner-container"></div>
+    <script type="text/babel">
+     var BannerContainer = React.createClass({
+       getInitialState: function() {
+         return {showBanner: true, message: this.props.message};
+       },
+       handleClick: function(event) {
+         this.setState({showBanner: !this.state.showBanner, message: this.state.message});
+       },
+       handleAjaxButtonClick: function(event) {
+         fetch('https://jsonplaceholder.herokuapp.com/posts/1')
+         .then(function(response) {
+           return response.json();
+         }).then(function(json) {
+           console.log(json);
+           this.setState({'message': json.title});
+         }.bind(this));
+       },
+       render: function() {
+         return (
+           <div>
+             <h4><button onClick={this.handleClick}>Click to {this.state.showBanner ? 'hide' : 'show'} {this.state.message}</button></h4>
+             <Banner show={this.state.showBanner} message={this.state.message} />
+             <h4><button onClick={this.handleAjaxButtonClick}>Click to update message via AJAX</button></h4>
+           </div>
+         );
+       }
+     });
+
+     var Banner = React.createClass({
+       render: function() {
+         return (
+           <div className={this.props.show ? '' : 'hidden'}>{this.props.message}</div>
+         );
+       }
+     });
+
+     ReactDOM.render(
+       <BannerContainer message="React 101!" />, document.getElementById('banner-container')
+     );
+    </script>
+  </body>
+</html>
