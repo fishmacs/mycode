@@ -9,17 +9,16 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class ShopSpec extends PlaySpec {
+  val app = GuiceApplicationBuilder().build
   var id = 0L
 
   "A Shop" should {
-
-    def getShop(implicit app: Application): Shop = {
+    def getShop(): Shop = {
       val appToShop = Application.instanceCache[Shop]
       appToShop(app)
     }
 
     "add item" in new WithApplication {
-      implicit val app0 = GuiceApplicationBuilder().build()
       val item: Item = Await.result(getShop.create("Play Framework Essentials", 42), Duration.Inf)
       item.name mustBe "Play Framework Essentials"
       item.price mustBe 42
@@ -27,7 +26,6 @@ class ShopSpec extends PlaySpec {
     }
 
     "get item" in new WithApplication {
-      implicit val app0 = GuiceApplicationBuilder().build()
       val v = Await.result(getShop.get(id), Duration.Inf)
       val item = v.get
       item mustBe a [Item]
