@@ -39,6 +39,15 @@ class HttpSpec extends PlaySpec with OneAppPerSuite {
       items.asInstanceOf[JsArray].value must have length 1
     }
 
+    "item details" in {
+      val res = route(app, FakeRequest(Items.details(id))).get
+      status(res) mustBe OK
+      val item = readItem.reads(contentAsJson(res)).get
+      item.name mustBe "Play Framework Essentials"
+      item.price mustBe 42
+      id = item.id
+    }
+
     "update item" in {
       val call = Items.update(id)
       val res = route(app, FakeRequest(call.method, call.url,

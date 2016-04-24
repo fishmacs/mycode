@@ -1,7 +1,13 @@
 package controllers
 
-import play.api.libs.json.{__, Json, Reads, JsSuccess, JsError}
-import play.api.mvc.{Controller, Action}
+import javax.inject.Inject
+
+import models.Shop
+import play.api.libs.json.{JsError, JsSuccess, Json, Reads, __}
+import play.api.mvc.{Action, Controller}
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
+import scala.util.{Failure, Success}
 
 case class CreateItem(name: String, price: Double)
 
@@ -25,10 +31,8 @@ object Items {
   implicit val writeItem = Json.writes[Item]
 }
 
-class Items extends Controller {
+class Items @Inject() (shop: Shop) extends Controller {
   import Items._
-
-  val shop = models.Shop // Refer to your Shop implementation
 
   // def create = Action(parse.json) {
   //   implicit request =>
@@ -43,38 +47,33 @@ class Items extends Controller {
   //   }
   // }
 
-  def create = Action(parse.json[CreateItem]) { implicit request =>
-    shop.create(request.body.name, request.body.price) match {
-      case Some(item) => Ok(Json.toJson(item))
-      case None => InternalServerError
-    }
+  def create = Action.async(parse.json[CreateItem]) { implicit request =>
+    shop.create(request.body.name, request.body.price).map(item => Ok(Json.toJson(item)))
   }
 
-  def list(page: Int) = Action {
-    Ok(
-      Json.toJson(shop.list)
-    )
+  def list(page: Int) = Action.async {
+    shop.list.map(items => Ok(Json.toJson(items)))
   }
 
-  def details(id: Long) = Action {
-    shop.get(id) match {
+  def details(id: Long) = Action.async {
+    shop.get(id).map(_ match {
       case Some(item) => Ok(Json.toJson(item))
       case None => NotFound
-    }
+    })
   }
 
-  def update(id: Long) = Action(parse.json[CreateItem]) { implicit request =>
+  def update(id: Long) = Action.async(parse.json[CreateItem]) { implicit request =>
     val item = request.body
-    shop.update(id, item.name, item.price) match {
+    shop.update(id, item.name, item.price).map(_ match {
       case Some(item) => Ok(Json.toJson(item))
       case None => InternalServerError
-    }
+    })
   }
 
-  def delete(id: Long) = Action {
-    if (shop.delete(id))
-      Ok("ok")
-    else
-      NotFound
+  def delete(id: Long) = Action.async {
+    shop.delete(id).map(_ match {
+      case true => Ok("ok")
+      case false => NotFound
+    })
   }
 }

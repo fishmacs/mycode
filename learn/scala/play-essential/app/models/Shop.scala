@@ -2,6 +2,14 @@ package models
 
 import scala.collection.concurrent.TrieMap
 import java.util.concurrent.atomic.AtomicLong
+import javax.inject.Inject
+
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import slick.driver.JdbcProfile
+
+import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 case class Item(id: Long, name: String, price: Double)
 
@@ -38,34 +46,44 @@ case class Item(id: Long, name: String, price: Double)
 //     }
 // }
 
-trait Shop {
-  def list(): Seq[Item]
-  def create(name: String, price: Double): Option[Item]
-  def get(id: Long): Option[Item]
-  def update(id: Long, name: String, price: Double): Option[Item]
-  def delete(id: Long): Boolean
-}
+class Shop @Inject() (protected val dbConfigProvider: DatabaseConfigProvider) extends HasDatabaseConfigProvider[JdbcProfile] {
 
-object Shop extends Shop {
-  private val items = TrieMap.empty[Long, Item]
-  private val seq = new AtomicLong
+  import driver.api._
 
-  def list(): Seq[Item] = items.values.to[Seq]
+  private class ShopTable(tag: Tag) extends Table[Item](tag, "shop") {
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
 
-  def create(name: String, price: Double): Option[Item] = {
-    val id = seq.incrementAndGet()
-    val item = Item(id, name, price)
-    items.put(id, item)
-    Some(item)
+    def name = column[String]("name")
+
+    def price = column[Double]("price")
+
+    def * = (id, name, price) <>((Item.apply _).tupled, Item.unapply)
   }
 
-  def get(id: Long): Option[Item] = items.get(id)
+  private val items = TableQuery[ShopTable]
 
-  def update(id: Long, name: String, price: Double): Option[Item] = {
-    val item = Item(id, name, price)
-    items.replace(id, item)
-    Some(item)
+  def list(): Future[Seq[Item]] = db.run(items.result)
+
+  def create(name: String, price: Double): Future[Item] = db.run {
+    (items.map(item => (item.name, item.price))
+       returning items.map(_.id)
+       into ((tuple, id) => Item(id, tuple._1, tuple._2))
+    ) += (name, price)
   }
 
-  def delete(id: Long): Boolean = items.remove(id).isDefined
+  def get(id: Long): Future[Option[Item]] = db.run {
+    items.filter(_.id === id).take(1).result.headOption
+  }
+
+  def update(id: Long, name: String, price: Double): Future[Option[Item]] = {
+    val f: Future[Int] = db.run {
+      items.filter(_.id === id).map(i => (i.name, i.price)).update((name, price))
+    }
+    f.map(v => if (v > 0) Some(Item(id, name, price)) else None)
+  }
+
+  def delete(id: Long): Future[Boolean] = {
+    val v = db.run(items.filter(_.id === id).delete)
+    v.map(i => i > 0)
+  }
 }
