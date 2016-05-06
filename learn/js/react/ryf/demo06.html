@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <div id="example"></div>
+    <script src="../react-0.14.7/build/react.js"></script>
+    <script src="../react-0.14.7/build/react-dom.js"></script>
+    <script src="../js/babel-browser.min.js"></script>
+    <script type="text/babel">
+     class MyTitle extends React.Component {
+       render() {
+         return <h1>{ this.props.title }</h1>
+       }
+     }
+
+     MyTitle.propTypes = {
+       title: React.PropTypes.string.isRequired
+     };
+
+     MyTitle.defaultProps = {title: 'Hello World!'};
+
+     ReactDOM.render(
+       <MyTitle />,
+       document.getElementById('example')
+     );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <div id="example"></div>
+    <script src="../react-0.14.7/build/react.js"></script>
+    <script src="../react-0.14.7/build/react-dom.js"></script>
+    <script src="../js/babel-browser.min.js"></script>
+    <script type="text/babel">
+      class NoteList extends React.Component {
+        render() {
+          return (
+           <ol>
+             {
+             React.Children.map(this.props.children, (child) => {return <li>{child}</li>;})
+             }
+           </ol>
+          );
+        }
+      }
+
+      ReactDOM.render(
+        <NoteList>
+          <span>hello</span>
+          <span>world</span>
+        </NoteList>,
+        document.getElementById('example')
+      );
+    </script>
+  </body>
+</html>
