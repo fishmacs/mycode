@@ -1,5 +1,6 @@
 #encoding=utf8
 
+import codecs
 import xlrd
 
 
@@ -53,3 +54,19 @@ def load_gou2(p):
             num = int(row[p])
             ret[name] = (num, price * num)
     return ret
+
+
+def extract(filename, outfile):
+    wb = xlrd.open_workbook(filename)
+    sheet = wb.sheets()[0]
+    with codecs.open(outfile, 'wb', 'gbk') as f:
+        lines = []
+        for i in xrange(4, sheet.nrows - 2):
+            row = [unicode(x) for x in sheet.row_values(i)]
+            if row[1]:
+                line = ','.join([row[0], row[1][6:], row[3], row[4], row[5], row[6], row[2]])
+                lines.append(line)
+
+        lines = sorted(lines, key=lambda line: str(line[0]))
+        for line in lines:
+            f.write(line + '\n')
