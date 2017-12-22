@@ -1,0 +1,13 @@
+//.*
+*.pyc
+node_modules/
+\#*
+/learn/dm/
+/learn/mytest/
+/learn/js/koa
+/learn/scala/examples/
+/learn/scala/fpscala/
+/learn/bootstrap/
+target/
+react-*/
+js/react/
