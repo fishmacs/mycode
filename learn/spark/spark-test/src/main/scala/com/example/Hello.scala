@@ -25,7 +25,7 @@ object Hello {
       .option("inferSchema", "true")
       .schema(columnsToSchema(columns))
       .load("/Users/zw/work/lanzhou/bigdata/大数据上海数据样本/用户信息.csv")
-    println("Lines with data: %s".format(logData.count))
+    Println("Lines with data: %s".format(logData.count))
     saveDB(sqlCxt, logData, columns.updated(2, ("create_time", DateType)))
   }
 
@@ -42,5 +42,23 @@ object Hello {
 
   def columnsToSchema(columns: List[(String, DataType)]): StructType = {
     StructType(columns.map {case (n, t) => StructField(n, t)})
+  }
+}
+
+object RddHelper {
+  def showPartitions[T](rdd: org.apache.spark.rdd.RDD[T]): Seq[(Int, List[T])] = {
+    rdd.mapPartitionsWithIndex {
+      (i, iter) => {
+        var map = scala.collection.mutable.Map[Int, List[T]]()
+        while(iter.hasNext) {
+          if (map.contains(i)) {
+            map(i) = iter.next :: map(i)
+          } else {
+            map(i) = List[T](iter.next)
+          }
+        }
+        map.iterator
+      }
+    }.collect
   }
 }

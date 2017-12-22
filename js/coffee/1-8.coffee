@@ -34,7 +34,7 @@ intersect1 = (x, arr) ->
     y = arr[0]
     ys = arr[1..]
     [[x].concat(y, ys)].concat ([y].concat(y1) for y1 in intersect1(x, ys))
-    
+
 permutate = (arr) ->
   if arr.length is 0
     [[]]
@@ -84,7 +84,7 @@ group = (arr) ->
 
 digitsToNum = (digits) ->
   digits.reduce ((num, d) -> num * 10 + d), 0
-  
+
 check1 = ->
   for item in combine 10, 5
     digits = select item
