@@ -10,7 +10,7 @@ object ProginscalaBuild extends Build {
       name := "ProgInScala",
       organization := "org.fish.macs",
       version := "0.1-SNAPSHOT",
-      scalaVersion := "2.9.2"
+      scalaVersion := "2.12.10"
       // add other settings here
     )
   )

@@ -19,14 +19,14 @@ def divid(m, n):
     ret = []
     d = 2 * m / n
     for i in range(n + 1):
-        blue = 255 * i / n
-        red = 255 - 255 * i / n
+        blue = 255 * i // n
+        red = 255 - 255 * i // n
         y = m - i * d
         for j in range(n + 1):
-            blue = 255 * i / n
-            red = 255 - 255 * i / n
-            red = max(0, red - 255 * j / n)
-            green = 255 * j / n
+            blue = 255 * i // n
+            red = 255 - 255 * i // n
+            red = max(0, red - 255 * j // n)
+            green = 255 * j // n
             if red == 0 and green > 128 and blue > 128:
                 red = green
                 blue = 0

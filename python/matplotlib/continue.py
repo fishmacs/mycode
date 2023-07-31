@@ -28,9 +28,9 @@ def display(funcs, xs):
     col = int(np.sqrt(n))
     row = int(np.ceil(n / col))
     grid = GridSpec(row, col)
-    for i in xrange(row):
-        for j in xrange(col):
-            print 'zwww', i, j
+    for i in range(row):
+        for j in range(col):
+            print('zwww', i, j)
             pt.subplot(grid[i, j])
             func, x = funcs[i * col + j], xs[i * col + j]
             pt.plot(x, func(x))

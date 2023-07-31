@@ -1,6 +1,6 @@
 name := "progscala"
 
-scalaVersion := "2.9.2"
+scalaVersion := "2.12.10"
 
 version := "0.1"
 
